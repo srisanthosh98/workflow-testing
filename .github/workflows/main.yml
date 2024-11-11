@@ -3,7 +3,7 @@ name: Remote Backup Workflow
 on:
   push:
     branches:
-      - api-master
+      - main
 
 jobs:
   backup:
