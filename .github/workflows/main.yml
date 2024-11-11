@@ -52,4 +52,4 @@ jobs:
             else
               echo "Backup path does not exist: ${BACKUPPATH}"
             fi
-EOF
+          EOF
