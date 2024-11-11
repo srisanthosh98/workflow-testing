@@ -25,9 +25,5 @@ jobs:
 
       - name: Create backup directory on Server 1
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}/"
           
-          # Optionally, remove the previous backup directory based on the previous workflow run number
-          echo "Removing previous backup ${PREVIOUS_BACKUP_NAME}"
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} \
-            "rm -rf ${{ secrets.BACKUPPATH }}${PREVIOUS_BACKUP_NAME}"
