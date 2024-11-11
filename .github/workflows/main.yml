@@ -35,11 +35,11 @@ jobs:
           # SSH into the server and find and remove old backups
           ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << EOF
             # Check if the BACKUPPATH exists
-            if [ -d "${BACKUPPATH}" ]; then
-              echo "Backup path exists: ${BACKUPPATH}"
+            if [ -d "${secrets.BACKUPPATH}" ]; then
+              echo "Backup path exists: ${secrets.BACKUPPATH}"
               
               # Find all backup directories with the pattern 'api-<build_number>'
-              for backup in \$(ls -d ${BACKUPPATH}api-*); do
+              for backup in \$(ls -d ${secrets.BACKUPPATH}api-*); do
                 # Extract the build number from the directory name
                 build_number=\$(echo \$backup | sed -E 's/.*api-([0-9]+)\/.*/\1/')
                 
