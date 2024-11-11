@@ -26,4 +26,15 @@ jobs:
       - name: Create backup directory on Server 1
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}/"
-           
+
+      - name: Remove previous backup (old build number)
+        run: |
+          # SSH into the server and remove the previous backup folder
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+            # List all backup directories, sort by creation time, and get the second-to-last one
+            backups=$(ls -dt ${BACKUPPATH}api-* | tail -n +2)
+            for backup in $backups; do
+              echo "Removing old backup: $backup"
+              rm -rf "$backup"  # Remove the old backup
+            done
+          EOF
