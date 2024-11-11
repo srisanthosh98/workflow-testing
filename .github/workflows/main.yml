@@ -26,13 +26,12 @@ jobs:
       - name: Create backup directory on Server 1
         run: |
           # Get current GitHub workflow run number
-          BACKUP_NAME="api-${{ github.run_number }}"
           PREVIOUS_BACKUP_NAME="api-$((github.run_number - 1))"
           
           # Backup the current state to a directory based on the current workflow run number
           echo "Backing up to ${BACKUP_NAME}"
           ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} \
-            "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}${BACKUP_NAME}/"
+            "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}/"
           
           # Optionally, remove the previous backup directory based on the previous workflow run number
           echo "Removing previous backup ${PREVIOUS_BACKUP_NAME}"
