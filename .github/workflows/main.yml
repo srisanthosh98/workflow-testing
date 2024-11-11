@@ -26,6 +26,4 @@ jobs:
       - name: Create backup directory on Server 1
         run: |
           - name: Create backup directory on Server 1
-            ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "mkdir -p ${BACKUPPATH}api-${{ github.run_number }}"
-            ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}/"
-
+            ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-test/"
