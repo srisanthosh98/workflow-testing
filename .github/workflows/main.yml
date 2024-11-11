@@ -28,28 +28,31 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-${{ github.run_number }}/"
 
       - name: Remove old backups (build numbers less than the current build)
-        run: |
-          # Define the current build number
-          current_build_number=${{ github.run_number }}
+  run: |
+    # Define the current build number
+    current_build_number=${{ github.run_number }}
 
-          # SSH into the server and find and remove old backups
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << EOF
-            # Check if the BACKUPPATH exists
-            if [ -d "${secrets.BACKUPPATH}" ]; then
-              echo "Backup path exists: ${secrets.BACKUPPATH}"
-              
-              # Find all backup directories with the pattern 'api-<build_number>'
-              for backup in \$(ls -d ${secrets.BACKUPPATH}api-*); do
-                # Extract the build number from the directory name
-                build_number=\$(echo \$backup | sed -E 's/.*api-([0-9]+)\/.*/\1/')
-                
-                # If the build number is less than the current build number, remove the backup
-                if [ "\$build_number" -lt "$current_build_number" ]; then
-                  echo "Removing old backup: \$backup"
-                  rm -rf "\$backup"
-                fi
-              done
-            else
-              echo "Backup path does not exist: ${BACKUPPATH}"
-            fi
-          EOF
+    # SSH into the server and find and remove old backups
+    ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << EOF
+      # Define the backup path
+      BACKUPPATH="${{ secrets.BACKUPPATH }}"
+
+      # Check if the BACKUPPATH exists
+      if [ -d "\$BACKUPPATH" ]; then
+        echo "Backup path exists: \$BACKUPPATH"
+
+        # Find all backup directories under BACKUPPATH with the pattern 'api-<build_number>'
+        for backup in \$(ls -d \${BACKUPPATH}/api-*); do
+          # Extract the build number from the directory name
+          build_number=\$(echo \$backup | sed -E 's/.*api-([0-9]+)\/.*/\1/')
+
+          # If the build number is less than the current build number, remove the backup
+          if [ "\$build_number" -lt "$current_build_number" ]; then
+            echo "Removing old backup: \$backup"
+            rm -rf "\$backup"
+          fi
+        done
+      else
+        echo "Backup path does not exist: \$BACKUPPATH"
+      fi
+    EOF
