@@ -43,16 +43,22 @@ jobs:
 
           # Find all backup directories under BACKUPPATH with the pattern 'api-<build_number>'
           for backup in \$(ls -d \${BACKUPPATH}/api-*); do
-          # Extract the build number from the directory name
-          build_number=\$(echo \$backup | sed -E 's/.*api-([0-9]+)\/.*/\1/')
+          # Extract the build number from the directory name using regex
+          build_number=\$(echo \$backup | sed -E 's/.*api-([0-9]+).*/\1/')
+
+          # Debugging: Print out the build number
+          echo "Extracted build number: \$build_number"
 
           # If the build number is less than the current build number, remove the backup
-          if [ "\$build_number" -lt "$current_build_number" ]; then
+          if [ -n "\$build_number" ] && [ "\$build_number" -lt "$current_build_number" ]; then
             echo "Removing old backup: \$backup"
             rm -rf "\$backup"
+          else
+            echo "Skipping backup: \$backup (either not a valid build number or newer than current build)"
           fi
           done
           else
           echo "Backup path does not exist: \$BACKUPPATH"
           fi
           EOF
+
