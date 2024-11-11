@@ -1,0 +1,30 @@
+name: Remote Backup Workflow
+
+on:
+  push:
+    branches:
+      - api-master
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH for Server 1
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.PRIVATEKEY }}
+
+      - name: Add SSH keyscan for Server 1
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create backup directory on Server 1
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rsync -av ${{ secrets.FILEPATH }} ${{ secrets.BACKUPPATH }}api-$(date +%Y-%m-%d)/"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "rm -rf ${{ secrets.BACKUPPATH }}api-\$(date -d 'yesterday' +%Y-%m-%d)"
+         
