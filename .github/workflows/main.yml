@@ -29,4 +29,4 @@ jobs:
 
       - name: Cleanup old build directories on Server 1
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "cd ${{ secrets.BACKUPPATH }} && current_build=\$(git describe --tags --abbrev=0) && echo 'Current build: \$current_build' && find ${{ secrets.BACKUPPATH }} -maxdepth 1 -type d -name 'api-*' -exec bash -c 'for dir; do build_number=\$(echo \$dir | sed \"s/api-//\"); echo \"Checking build: \$build_number against current build: \$current_build\"; if [[ -n \"\$build_number\" && \"\$build_number\" =~ ^[0-9]+$ && \$build_number -lt \$current_build ]]; then rm -rf \"\$dir\"; echo \"Removed \$dir\"; else echo \"Skipped \$dir\"; fi; done' bash {} +"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "for backup in $(ls -d /opt/api/api-*); do build_number=$(echo $backup | sed -E "s/.*api-([0-9]+).*/\1/"); if [ -n "$build_number" ] && [ "$build_number" -lt "$current_build_number" ]; then rm -rf "$backup"; fi; done"
