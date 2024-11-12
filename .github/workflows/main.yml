@@ -29,5 +29,5 @@ jobs:
 
       - name: Cleanup old backups on Server 1
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "cd ${{ secrets.BACKUPPATH }} && find . -maxdepth 1 -type d -mtime +0 -exec rm -rf {} \;"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "cd ${{ secrets.BACKUPPATH }} && find . -maxdepth 1 -type d -exec rm -rf {} \;"
 
