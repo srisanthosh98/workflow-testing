@@ -29,4 +29,4 @@ jobs:
 
       - name: Cleanup old build directories on Server 1
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "for backup in $(ls -d ${{ secrets.BACKUPPATH }}/api-*); do build_number=$(echo $backup | sed -E "s/.*api-([0-9]+).*/\1/"); if [ -n "$build_number" ] && [ "$build_number" -lt "$current_build_number" ]; then rm -rf "$backup"; fi; done"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} "for backup in $(ls -d ${{ secrets.BACKUPPATH }}api-*); do build_number=$(echo $backup | sed -E "s/.*api-([0-9]+).*/\1/"); if [ -n "$build_number" ] && [ "$build_number" -lt "$current_build_number" ]; then rm -rf "$backup"; fi; done"
